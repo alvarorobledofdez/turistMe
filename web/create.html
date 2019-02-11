@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Panel</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<style>
+		body{
+			background: lavender;
+		}
+		main{
+			margin: 40px auto;
+		}
+	</style>
+
+</head>
+<body>
+	<main>
+		<h1 id='header'>Panel</h1>
+
+		<div id='create'>
+			<h3>Create User</h3>
+			<p><label>Name:</label></p>
+			<input type="text" name="name" id="name" placeholder="name">
+
+			<p><label>Email:</label></p>
+			<input type="text" name="email" id="email" placeholder="email">
+			
+			<p><label>Password:</label></p>
+			<input type="password" name="password" id="password" placeholder="Password">
+
+			<br><br>
+
+			<button id="btn" onclick="createUser()">Create</button>
+		</div>
+
+		<br><br><br>
+
+		<div>
+			<button onclick="show()">Users list</button>
+			<button onclick="logout()">Logout</button>
+		</div>
+	</main>
+</body>
+
+<script type="text/javascript">
+
+	window.onload = function(){
+			checkLogin();
+	}
+
+
+
+	function createUser(){
+		var name = document.getElementById("name").value;
+		var email = document.getElementById("email").value;
+		var password = document.getElementById("password").value;
+
+		$.ajax({
+			beforeSend: function(request){
+				request.setRequestHeader("Authorization", sessionStorage.getItem("data"));
+			},
+			url: "http://localhost:8888/turistme/public/index.php/api/users",
+			method: "POST",
+			data:{
+  				name: name,
+  				email: email,
+  				password: password
+  			},
+
+			success: function(response){
+				alert('User created');
+				window.location = "http://localhost:8888/turistme/web/panel.html";
+			},
+
+			error: function(data){
+				alert(data.responseJSON['message']);
+			}
+		})
+	}
+
+	function checkLogin(){
+		var authorization = sessionStorage.getItem('data');
+		if (authorization == null) {
+  			window.location = "http://localhost:8888/turistme/web/index.html";
+		}
+	}
+
+	function show(){
+		window.location = "http://localhost:8888/turistme/web/panel.html";  
+	}
+
+	function logout(){
+		sessionStorage.clear();
+		window.location = "http://localhost:8888/turistme/web/index.html";  
+	}
+</script>
